@@ -28,13 +28,6 @@ func walk(fn *Node) {
 
 	lno := lineno
 
-	// Final typecheck for any unused variables.
-	for i, ln := range fn.Func.Dcl {
-		if ln.Op == ONAME && (ln.Class() == PAUTO || ln.Class() == PAUTOHEAP) {
-			ln = typecheck(ln, ctxExpr|ctxAssign)
-			fn.Func.Dcl[i] = ln
-		}
-	}
 
 	// Propagate the used flag for typeswitch variables up to the NONAME in its definition.
 	for _, ln := range fn.Func.Dcl {
@@ -51,10 +44,8 @@ func walk(fn *Node) {
 			if defn.Left.Name.Used() {
 				continue
 			}
-			yyerrorl(defn.Left.Pos, "%v declared but not used", ln.Sym)
 			defn.Left.Name.SetUsed(true) // suppress repeats
 		} else {
-			yyerrorl(ln.Pos, "%v declared but not used", ln.Sym)
 		}
 	}
 

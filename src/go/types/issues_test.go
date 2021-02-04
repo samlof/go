@@ -28,16 +28,6 @@ func mustParse(t *testing.T, src string) *ast.File {
 	}
 	return f
 }
-func TestIssue5770(t *testing.T) {
-	f := mustParse(t, `package p; type S struct{T}`)
-	conf := Config{Importer: importer.Default()}
-	_, err := conf.Check(f.Name.Name, fset, []*ast.File{f}, nil) // do not crash
-	want := "undeclared name: T"
-	if err == nil || !strings.Contains(err.Error(), want) {
-		t.Errorf("got: %v; want: %s", err, want)
-	}
-}
-
 func TestIssue5849(t *testing.T) {
 	src := `
 package p
@@ -280,24 +270,6 @@ func main() {
 	f("src0", src0)
 	f("src1", src1)
 	f("src2", src2)
-}
-
-func TestIssue22525(t *testing.T) {
-	f := mustParse(t, `package p; func f() { var a, b, c, d, e int }`)
-
-	got := "\n"
-	conf := Config{Error: func(err error) { got += err.Error() + "\n" }}
-	conf.Check(f.Name.Name, fset, []*ast.File{f}, nil) // do not crash
-	want := `
-1:27: a declared but not used
-1:30: b declared but not used
-1:33: c declared but not used
-1:36: d declared but not used
-1:39: e declared but not used
-`
-	if got != want {
-		t.Errorf("got: %swant: %s", got, want)
-	}
 }
 
 func TestIssue25627(t *testing.T) {

@@ -28,13 +28,6 @@ func typecheckTypeSwitch(n *Node) {
 		t = nil
 	}
 
-	// We don't actually declare the type switch's guarded
-	// declaration itself. So if there are no cases, we won't
-	// notice that it went unused.
-	if v := n.Left.Left; v != nil && !v.isBlank() && n.List.Len() == 0 {
-		yyerrorl(v.Pos, "%v declared but not used", v.Sym)
-	}
-
 	var defCase, nilCase *Node
 	var ts typeSet
 	for _, ncase := range n.List.Slice() {

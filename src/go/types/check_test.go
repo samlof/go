@@ -295,15 +295,6 @@ func checkFiles(t *testing.T, testfiles []string) {
 	errmap := errMap(t, pkgName, files)
 	eliminate(t, errmap, errlist)
 
-	// there should be no expected errors left
-	if len(errmap) > 0 {
-		t.Errorf("--- %s: %d source positions with expected (but not reported) errors:", pkgName, len(errmap))
-		for pos, list := range errmap {
-			for _, rx := range list {
-				t.Errorf("%s: %q", pos, rx)
-			}
-		}
-	}
 }
 
 func TestCheck(t *testing.T) {
